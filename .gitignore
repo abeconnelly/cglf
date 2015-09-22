@@ -1,3 +1,7 @@
+*~
+*.swp
+assay
+
 # Object files
 *.o
 *.ko
