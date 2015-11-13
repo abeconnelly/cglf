@@ -35,8 +35,24 @@ func LoadGenomeLibraryCSV(fn string) (SGLF,error) {
   sglf.Lib = make(map[int]map[int][]string)
   sglf.LibInfo = make(map[int]map[int][]SGLFInfo)
 
+  e:=sglf.AddGenomeLibraryCSV(fn)
+
+  return sglf,e
+}
+
+func (sglf *SGLF) AddGenomeLibraryCSV(fn string) error {
+
+  if sglf.Lib == nil {
+    sglf.Lib = make(map[int]map[int][]string)
+  }
+
+  if sglf.LibInfo == nil {
+    sglf.LibInfo = make(map[int]map[int][]SGLFInfo)
+  }
+
   ain,e := autoio.OpenReadScanner(fn)
-  if e!=nil { return sglf, e }
+  //if e!=nil { return sglf, e }
+  if e!=nil { return e }
   defer ain.Close()
 
   line_no:=-1
@@ -72,25 +88,32 @@ func LoadGenomeLibraryCSV(fn string) (SGLF,error) {
     if (l[0]==0) || (l[0]=='#') { continue }
 
     line_parts := strings.Split(l, ",")
-    if len(line_parts)<3 { return sglf, fmt.Errorf("not enough CSV elements on line_no %d", line_no) }
+    //if len(line_parts)<3 { return sglf, fmt.Errorf("not enough CSV elements on line_no %d", line_no) }
+    if len(line_parts)<3 { return fmt.Errorf("not enough CSV elements on line_no %d", line_no) }
 
     tileid_span_parts := strings.Split(line_parts[0], "+")
-    if len(tileid_span_parts)!=2 { return sglf, fmt.Errorf("invalid tileid (%s) on line_no %d", line_parts[0], line_no) }
+    //if len(tileid_span_parts)!=2 { return sglf, fmt.Errorf("invalid tileid (%s) on line_no %d", line_parts[0], line_no) }
+    if len(tileid_span_parts)!=2 { return fmt.Errorf("invalid tileid (%s) on line_no %d", line_parts[0], line_no) }
 
     tileid_parts := strings.Split(tileid_span_parts[0], ".")
-    if len(tileid_parts)!=4 { return sglf, fmt.Errorf("invalid tileid (%s) on line_no %d", line_parts[0], line_no) }
+    //if len(tileid_parts)!=4 { return sglf, fmt.Errorf("invalid tileid (%s) on line_no %d", line_parts[0], line_no) }
+    if len(tileid_parts)!=4 { return fmt.Errorf("invalid tileid (%s) on line_no %d", line_parts[0], line_no) }
 
     tilepath_l,e := strconv.ParseInt(tileid_parts[0], 16, 64)
-    if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
+    //if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
+    if e!=nil { return fmt.Errorf("%v: line_no %d\n", e, line_no) }
 
     tilestep_l,e := strconv.ParseInt(tileid_parts[2], 16, 64)
-    if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
+    //if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
+    if e!=nil { return fmt.Errorf("%v: line_no %d\n", e, line_no) }
 
     tilevar_l,e := strconv.ParseInt(tileid_parts[3], 16, 64)
-    if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
+    //if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
+    if e!=nil { return fmt.Errorf("%v: line_no %d\n", e, line_no) }
 
     tilespan_l,e := strconv.ParseInt(tileid_span_parts[1], 16, 64)
-    if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
+    //if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
+    if e!=nil { return fmt.Errorf("%v: line_no %d\n", e, line_no) }
 
     tilepath := int(tilepath_l)
     tilestep := int(tilestep_l)
@@ -100,7 +123,8 @@ func LoadGenomeLibraryCSV(fn string) (SGLF,error) {
     md5_str := line_parts[1]
     seq := line_parts[2]
 
-    if len(seq) < 48 { return sglf, fmt.Errorf("len(seq)<48: line_no %d", line_no) }
+    //if len(seq) < 48 { return sglf, fmt.Errorf("len(seq)<48: line_no %d", line_no) }
+    if len(seq) < 48 { return fmt.Errorf("len(seq)<48: line_no %d", line_no) }
 
     pfxtag := seq[:24]
     sfxtag := seq[len(seq)-24:]
@@ -170,7 +194,8 @@ func LoadGenomeLibraryCSV(fn string) (SGLF,error) {
     //os.Exit(0)
   }
 
-  return sglf, nil
+  //return sglf, nil
+  return nil
 }
 
 /*
