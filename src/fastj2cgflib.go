@@ -23,6 +23,24 @@ stored with the callset/sample.
 
 */
 
+
+// the magic codes are:
+//
+// a - canonical tile
+// b - simple sub tile
+// c - alt data tile (gzip?)
+// d - simple indel
+// e - simple align
+// f - aux align
+// g - failed aux align
+
+// The first output column:
+// _ - in cache
+// * - aux overflow type 1
+// ! - aux body seq flag
+// ^ - catch all
+
+
 package main
 
 import "os"
@@ -51,7 +69,7 @@ import "bufio"
 import _ "io/ioutil"
 import "compress/gzip"
 
-var VERSION_STR string = "AGPLv3, v0.1.0"
+var VERSION_STR string = "AGPLv3, v0.2.0"
 
 var gProfileFlag bool = false
 var gProfileFile string = "fastj2cgflib.cprof"
@@ -1910,15 +1928,16 @@ func _main( c *cli.Context ) {
   g_verbose         = c.Bool("Verbose")
   g_output_format   = c.String("output-format")
   g_tagset_fn       = c.String("tagset")
-  action := c.String("action")
+  //action := c.String("action")
+  action := "create"
 
-  if action != "create" { 
+  if action != "create" {
     fmt.Printf("only the 'create' action is supported now")
     os.Exit(1)
   }
 
-  ifn := c.String("input") ; _ = ifn
-  ofn := c.String("output")
+  //ifn := c.String("input") ; _ = ifn
+  //ofn := c.String("output")
 
   if len(c.String("fastj")) == 0 {
     fmt.Fprintf(os.Stderr, "Provide FastJ file\n")
@@ -1926,11 +1945,13 @@ func _main( c *cli.Context ) {
     os.Exit(1)
   }
 
+  /*
   if len(ofn)==0 {
     fmt.Fprintf(os.Stderr, "Provide output CGLF flie\n")
     cli.ShowAppHelp(c)
     os.Exit(1)
   }
+  */
 
   if len(c.String("tagset"))==0 {
     fmt.Fprintf(os.Stderr, "Provide output tagset flie\n")
@@ -1957,9 +1978,11 @@ func _main( c *cli.Context ) {
   rank_sequences()
   calc_ranked_diffs()
 
+  /*
   if action == "create" {
     write_cglf(ofn)
   }
+  */
 
   if g_verbose {
     //write_csv()
@@ -1973,7 +1996,7 @@ func main() {
 
   app := cli.NewApp()
   app.Name  = "fastj2cgflib"
-  app.Usage = "Create compact genome library (CGLF) from FastJ input stream"
+  app.Usage = "Create compact genome library (CGLF) from FastJ input stream.  Output format is <code>,<tilepos>,<md5sum>,<sequence>"
   app.Version = VERSION_STR
   app.Author = "Curoverse, Inc."
   app.Email = "info@curoverse.com"
@@ -1985,27 +2008,33 @@ func main() {
       Usage: "FastJ input",
     },
 
+    /*
     cli.StringFlag{
       Name: "input, i",
       Usage: "CGLF file (only needed for certain actions)",
     },
+    */
 
+    /*
     cli.StringFlag{
       Name: "output, o",
       Value: "lib.cglf",
       Usage: "Output CGLF file (default to 'lib.cglf')",
     },
+    */
 
     cli.StringFlag{
       Name: "tagset, t",
-      Usage: "Tagset input (<tilepath>,<tagset-version>,<tilestep>,<tag>)",
+      Usage: "Tagset input (<tilepath>,<tilestep>,<tag>)",
     },
 
+    /*
     cli.StringFlag{
       Name: "action, a",
       Value: "create",
       Usage: "Action (append, create)",
     },
+    */
 
     cli.IntFlag{
       Name: "procs, N",
@@ -2013,21 +2042,25 @@ func main() {
       Usage: "MAXPROCS",
     },
 
+    /*
     cli.StringFlag{
       Name: "output-format, F",
       Value: "gvcf",
       Usage: "Output format: gvcf,compact (defaults to 'gvcf')",
     },
+    */
 
     cli.BoolFlag{
       Name: "Verbose, V",
       Usage: "Verbose flag",
     },
 
+    /*
     cli.BoolFlag{
       Name: "run-tests, T",
       Usage: "Run tests",
     },
+    */
 
     cli.BoolFlag{
       Name: "pprof",

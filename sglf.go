@@ -57,9 +57,17 @@ func (sglf *SGLF) AddGenomeLibraryCSV(fn string) error {
 
   line_no:=-1
 
-  sglf.MD5Lookup = make(map[string]SGLFInfo)
-  sglf.PfxTagLookup = make(map[string]SGLFInfo)
-  sglf.SfxTagLookup = make(map[string]SGLFInfo)
+  if sglf.MD5Lookup == nil {
+    sglf.MD5Lookup = make(map[string]SGLFInfo)
+  }
+
+  if sglf.PfxTagLookup == nil {
+    sglf.PfxTagLookup = make(map[string]SGLFInfo)
+  }
+
+  if sglf.SfxTagLookup == nil {
+    sglf.SfxTagLookup = make(map[string]SGLFInfo)
+  }
 
   prev_pfxtag := ""
   prev_sfxtag := ""
