@@ -119,7 +119,8 @@ func (sglf *SGLF) AddGenomeLibraryCSV(fn string) error {
     //if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
     if e!=nil { return fmt.Errorf("%v: line_no %d\n", e, line_no) }
 
-    tilespan_l,e := strconv.ParseInt(tileid_span_parts[1], 16, 64)
+    //tilespan_l,e := strconv.ParseInt(tileid_span_parts[1], 16, 64)
+    tilespan_l,e := strconv.ParseInt(tileid_span_parts[1], 10, 64)
     //if e!=nil { return sglf, fmt.Errorf("%v: line_no %d\n", e, line_no) }
     if e!=nil { return fmt.Errorf("%v: line_no %d\n", e, line_no) }
 
@@ -156,6 +157,10 @@ func (sglf *SGLF) AddGenomeLibraryCSV(fn string) error {
 
       if _,ok := can_overwrite[prev_sfxtag] ; !ok {
 
+
+        //DEBUG
+        //fmt.Printf(">>> adding prev_sfxtag %s\n", prev_sfxtag)
+
         // not in map, add it
         //
         sglf.SfxTagLookup[prev_sfxtag] = prev_sglf_info
@@ -176,7 +181,6 @@ func (sglf *SGLF) AddGenomeLibraryCSV(fn string) error {
 
     }
 
-    prev_sfxtag = sfxtag
     if prev_tilepath != tilepath {
 
       if tilestep>0 {
@@ -188,6 +192,7 @@ func (sglf *SGLF) AddGenomeLibraryCSV(fn string) error {
 
       //fmt.Printf("######\n")
     }
+    prev_sfxtag = sfxtag
 
     if tilestep>0 {
       prev_pfxtag = pfxtag
@@ -200,6 +205,10 @@ func (sglf *SGLF) AddGenomeLibraryCSV(fn string) error {
 
     //fmt.Printf(":%s:\n", l)
     //os.Exit(0)
+  }
+
+  if prev_pfxtag != "" {
+    sglf.PfxTagLookup[prev_pfxtag] = prev_sglf_info
   }
 
   //return sglf, nil
